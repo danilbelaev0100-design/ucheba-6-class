@@ -11,6 +11,5 @@ app.get("/api/health", (req, res) => {
   res.json({ ok: true, message: "Сервер Учёба работает!" });
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server started on port ${PORT}`);
+app.liste
 });
