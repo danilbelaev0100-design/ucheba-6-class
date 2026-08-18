@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Учёба 🎓</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f8ff;color:#15234a;font-family:Arial,sans-serif}
+.app{max-width:480px;margin:auto;min-height:100vh;background:#fff;padding-bottom:95px}
+header{padding:24px 22px 10px;text-align:center;position:relative}.menu{position:absolute;left:22px;top:28px;font-size:30px}.profile{position:absolute;right:20px;top:20px;background:#f0edff;border-radius:18px;padding:12px;font-size:24px}
+h1{margin:4px 0;font-size:32px}.sub{color:#697080;font-size:17px}.hero{margin:18px;padding:28px;border-radius:30px;background:linear-gradient(135deg,#f0edff,#f8f7ff)}
+.hero h2{font-size:29px;margin:0 0 16px}.hero p{font-size:17px;line-height:1.55;color:#687083}button{border:0;cursor:pointer}
+.solve{width:100%;padding:18px;border-radius:18px;background:linear-gradient(90deg,#6540df,#8059ed);color:#fff;font-size:20px;font-weight:700}
+section{padding:0 20px}.title{font-size:24px;font-weight:700;margin:26px 0 16px}.subjects{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.subject{padding:18px;background:#fff;border-radius:22px;box-shadow:0 5px 22px #18234a12;text-align:center}.icon{font-size:36px}.subject b{display:block;margin:9px 0 4px}.grade{color:#6b49e7}
+.history{background:#fff;border-radius:20px;padding:14px;margin-bottom:10px;box-shadow:0 5px 20px #18234a10}.history b{font-size:15px}.history small{display:block;color:#7a8190;margin-top:5px}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#fff;border-top:1px solid #eee;padding:12px 8px;display:flex;justify-content:space-around}
+nav button{background:none;color:#737988;font-size:13px}nav .active{color:#7047e6;font-weight:700}
+.modal{display:none;position:fixed;inset:0;background:#0007;z-index:5}.sheet{position:absolute;bottom:0;width:min(480px,100%);left:50%;transform:translateX(-50%);background:#fff;border-radius:28px 28px 0 0;padding:24px;max-height:94vh;overflow:auto}
+textarea{width:100%;height:130px;border:1px solid #ddd;border-radius:18px;padding:15px;font-size:17px;resize:none}select,input{width:100%;padding:14px;border:1px solid #ddd;border-radius:14px;margin:10px 0;font-size:16px}
+.row{display:flex;gap:10px;margin-top:12px}.row button{flex:1;padding:15px;border-radius:15px;font-weight:700}.primary{background:#7047e6;color:#fff}.secondary{background:#f0eff8;color:#444}
+.photo{display:none;width:100%;margin-top:12px;border-radius:16px;max-height:220px;object-fit:contain;background:#f5f5f5}.status{color:#6d7280;margin-top:12px}.answer{white-space:pre-wrap;line-height:1.55;background:#f7f5ff;border-radius:18px;padding:16px;margin-top:14px}
+.loginbox{padding:10px 20px;color:#596174;font-size:14px}.pill{display:inline-block;background:#edf9ef;color:#19743a;padding:5px 9px;border-radius:20px}
+</style></head>
+<body>
+<div class="app">
+<header><div class="menu">☰</div><div class="profile" onclick="showLogin()">👤</div><h1>Учёба 🎓</h1><div class="sub">Твой ИИ-помощник в учёбе</div></header>
+<div id="session" class="loginbox">Безопасный режим: <span class="pill">защищено</span></div>
+<div class="hero"><h2>Нужно решить<br>задание?</h2><p>Сфотографируй задание или напиши его — ИИ прочитает, решит и объяснит ответ.</p><button class="solve" onclick="openModal()">📷 &nbsp; Решить задание</button></div>
+<section><div class="title">Выбери предмет</div><div class="subjects">
+<div class="subject" onclick="choose('Математика')"><div class="icon">➗</div><b>Математика</b><span class="grade">6 класс</span></div>
+<div class="subject" onclick="choose('Русский язык')"><div class="icon">🔤</div><b>Русский язык</b><span class="grade">6 класс</span></div>
+<div class="subject" onclick="choose('Английский язык')"><div class="icon">🅰️</div><b>Английский язык</b><span class="grade">6 класс</span></div>
+<div class="subject" onclick="choose('География')"><div class="icon">🌍</div><b>География</b><span class="grade">6 класс</span></div>
+<div class="subject" onclick="choose('Биология')"><div class="icon">🌿</div><b>Биология</b><span class="grade">6 класс</span></div></div>
+<div class="title">История</div><div id="history"></div></section>
+<nav><button class="active">⌂<br>Главная</button><button>▣<br>История</button><button>☆<br>Избранное</button><button>⚙<br>Настройки</button></nav>
+</div>
+
+<div class="modal" id="modal"><div class="sheet"><h2>🤖 Решить с ИИ</h2>
+<select id="subject"><option>Математика</option><option>Русский язык</option><option>Английский язык</option><option>География</option><option>Биология</option></select>
+<textarea id="task" placeholder="Напиши задание здесь…"></textarea><img id="preview" class="photo" alt="Фото задания">
+<div class="row"><button class="secondary" onclick="camera.click()">📷 Фото</button><button class="primary" onclick="solve()">🤖 Решить</button></div>
+<input id="camera" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" style="display:none">
+<div id="status" class="status"></div><div id="answer" class="answer" style="display:none"></div>
+<button class="secondary" style="width:100%;margin-top:12px;padding:14px;border-radius:15px" onclick="closeModal()">Закрыть</button></div></div>
+
+<div class="modal" id="login"><div class="sheet"><h2>🔐 Вход</h2>
+<input id="user" placeholder="Имя пользователя"><input id="pass" type="password" placeholder="Пароль">
+<button class="primary" style="width:100%;padding:15px;border-radius:15px" onclick="doLogin()">Войти</button>
+<p id="loginStatus" class="status"></p><button class="secondary" style="width:100%;margin-top:8px;padding:14px;border-radius:15px" onclick="document.getElementById('login').style.display='none'">Закрыть</button></div></div>
+
+<script>
+const key='ucheba_history_secure_v1';let imageData=null;let authToken=localStorage.getItem('ucheba_token')||'';
+const get=()=>JSON.parse(localStorage.getItem(key)||'[]');
+function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function render(){const h=get();document.getElementById('history').innerHTML=h.length?h.slice(0,30).map(x=>`<div class="history"><b>${esc(x.text||'Задание по фото')}</b><small>${esc(x.subject)} • ${new Date(x.date).toLocaleString('ru-RU')}</small></div>`).join(''):'<div class="history"><small>Пока нет решённых заданий.</small></div>'}
+function openModal(){document.getElementById('modal').style.display='block';document.getElementById('answer').style.display='none';document.getElementById('status').textContent=''}
+function closeModal(){document.getElementById('modal').style.display='none'}
+function choose(s){document.getElementById('subject').value=s;openModal()}
+function showLogin(){document.getElementById('login').style.display='block'}
+camera.addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{imageData=r.result;preview.src=imageData;preview.style.display='block';status.textContent='Фото готово. Нажми «Решить»'};r.readAsDataURL(f)})
+async function solve(){const task=document.getElementById('task').value.trim(),subject=document.getElementById('subject').value;if(!task&&!imageData)return alert('Напиши задание или сфотографируй его.');
+status.textContent='ИИ читает задание и решает…';answer.style.display='none';
+try{const r=await fetch('/api/solve',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({subject,task,image:imageData})});const d=await r.json();if(!r.ok)throw Error(d.error||'Ошибка');answer.textContent=d.answer;answer.style.display='block';status.textContent='Готово ✓';let h=get();h.unshift({text:task||'Задание по фото',subject,date:Date.now()});localStorage.setItem(key,JSON.stringify(h));render()}catch(e){status.textContent='Ошибка: '+e.message}}
+async function doLogin(){const username=user.value.trim(),password=pass.value;loginStatus.textContent='Выполняется вход…';try{const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});const d=await r.json();if(!r.ok)throw Error(d.error||'Ошибка');authToken=d.token;localStorage.setItem('ucheba_token',authToken);loginStatus.textContent='Вход выполнен ✓';session.innerHTML='Вход выполнен: <span class="pill">'+esc(d.username)+'</span>';setTimeout(()=>login.style.display='none',600)}catch(e){loginStatus.textContent='Ошибка входа: '+e.message}}
+document.getElementById('modal').onclick=e=>{if(e.target.id==='modal')closeModal()};document.getElementById('login').onclick=e=>{if(e.target.id==='login')login.style.display='none'};render();
+</script></body></html>
